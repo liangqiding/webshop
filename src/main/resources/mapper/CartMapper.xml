@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定属性-->
+
+<mapper namespace="com.webshop.webshop.dao.CartMapper">
+    <insert id="InsCart" parameterType="cart">
+        INSERT INTO `webshop`.`cart`
+(
+ `cart_p_name`,
+`cart_date`,
+`cart_p_id`,
+`cart_order_price`,
+`cart_state`,
+`cart_order_id`,
+`cart_sum`,
+`cart_img`,
+`u_id`,
+`cart_p_price`,
+`seller_id`,
+`cart_uuid`
+)
+VALUES
+ (
+ #{cart_p_name},
+#{cart_date},
+#{cart_p_id},
+#{cart_order_price},
+#{cart_state},
+#{cart_order_id},
+#{cart_sum},
+#{cart_img},
+#{u_id},
+#{cart_p_price},
+#{seller_id},
+#{cart_uuid}
+);
+    </insert>
+<!--    普通订单更新-->
+    <update id="UpdCartByid" parameterType="cart">
+        UPDATE `webshop`.`cart`
+        <set>
+            `cart_state`=#{cart_state},
+        </set>
+        <where>
+            (cart_state='支付中' or cart_state='待支付')
+            <if test="cart_id !=null">
+                and cart_id =#{cart_id}
+            </if>
+            <if test="u_id !=null">
+                and u_id =#{u_id}
+            </if>
+        </where>
+    </update>
+<!--购物车更新-->
+    <update id="UpdCart_CarByid" parameterType="cart">
+        UPDATE `webshop`.`cart`
+        <set>
+            `cart_state`=#{cart_state},
+        </set>
+        <where>
+            (cart_state='购物车' or cart_state='购物车支付中')
+            <if test="cart_id !=null">
+                and cart_id =#{cart_id}
+            </if>
+            <if test="u_id !=null">
+                and u_id =#{u_id}
+            </if>
+        </where>
+    </update>
+<!--结算普通订单-->
+    <update id="UpdCartByStateAndU_idAndC_id" parameterType="cart">
+        UPDATE `webshop`.`cart`
+        <set>
+            `cart_state`=#{cart_state},
+            `cart_order_id`=#{cart_order_id}
+        </set>
+        <where>
+            cart_state='支付中'
+            <if test="cart_id !=null">
+                and cart_id =#{cart_id}
+            </if>
+            <if test="u_id !=null">
+                and u_id =#{u_id}
+            </if>
+        </where>
+    </update>
+<!--结算购物车订单-->
+    <update id="UpdCart_Car" parameterType="cart">
+        UPDATE `webshop`.`cart`
+        <set>
+            `cart_state`=#{cart_state},
+            `cart_order_id`=#{cart_order_id}
+        </set>
+        <where>
+            cart_state='购物车支付中'
+            <if test="cart_id !=null">
+                and cart_id =#{cart_id}
+            </if>
+            <if test="u_id !=null">
+                and u_id =#{u_id}
+            </if>
+        </where>
+    </update>
+<!--查询普通订单-->
+    <select id="SelCartByU_idAndState" parameterType="cart" resultType="cart">
+        select * from cart
+        <where>
+                and  u_id=#{u_id}
+            <if test="cart_state !=null and cart_state!=''">
+                and cart_state =#{cart_state}
+            </if>
+            <if test="cart_state ==null ">
+                and (cart_state ='待支付' or cart_state ='支付中')
+            </if>
+            <if test="cart_uuid !=null and cart_uuid!=''">
+                and cart_uuid =#{cart_uuid}
+            </if>
+        </where>
+    </select>
+<!--查询购物车订单-->
+    <select id="Sel_CartCar_All_state_uid" parameterType="cart" resultType="cart">
+        select * from cart
+        <where>
+            u_id=#{u_id}
+            <if test="cart_state !=null and cart_state!=''">
+                and cart_state =#{cart_state}
+            </if>
+            <if test="cart_state ==null ">
+                and
+                (cart_state ='购物车' or cart_state ='购物车支付中')
+            </if>
+            <if test="cart_uuid !=null and cart_uuid!=''">
+                and cart_uuid =#{cart_uuid}
+            </if>
+        </where>
+    </select>
+    <select id="SelCartCount" parameterType="cart" resultType="Integer">
+        select count(*) from cart
+        <where>
+            u_id=#{u_id}
+            <if test="cart_state !=null and cart_state!=''">
+                and cart_state =#{cart_state}
+            </if>
+            <if test="cart_state ==null ">
+                and   (cart_state ='购物车' or cart_state ='购物车支付中')
+            </if>
+            <if test="cart_uuid !=null and cart_uuid!=''">
+                and cart_uuid =#{cart_uuid}
+            </if>
+        </where>
+    </select>
+</mapper>
+

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>商品购买</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link type="text/css" rel="stylesheet" href="../main/css/bootstrap.min.css"/>
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="../main/css/slick.css"/>
+    <link type="text/css" rel="stylesheet" href="../main/css/slick-theme.css"/>
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="../main/css/nouislider.min.css"/>
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="../main/css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="../main/css/style.css"/>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+<!-- HEADER -->
+
+<!-- HEADER -->
+<header id="header_include">
+    <!-- TOP HEADER -->
+    <div id="top-header">
+        <div class="container">
+            <ul class="header-links pull-left">
+                <li><a href="####"><i class="fa fa-phone"></i> 0758-xxxxxxx</a></li>
+                <li><a href="####"><i class="fa fa-envelope-o"></i> email@xxxxx.com</a></li>
+                <li><a href="####"><i class="fa fa-map-marker"></i> 广东-东莞</a></li>
+            </ul>
+            <ul class="header-links pull-right">
+                <li><a href="/manage"><i class="fa fa-dollar"></i> 卖家后台</a></li>
+                <li><a href="####"><i class="fa fa-dollar"></i> 用户名:{{users.u_name}}</a></li>
+                <li><a href="/my"><i class="fa fa-user-o"></i> 我的账号</a></li>
+                <li><a href="/logout"><i class="fa fa-user-o"></i> 退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- /TOP HEADER -->
+
+    <!-- MAIN HEADER -->
+    <div id="header">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <!-- LOGO -->
+                <div class="col-md-3">
+                    <div class="header-logo">
+                        <a href="####" class="logo">
+                            <img src="../main/img/logo.png" alt="">
+                        </a>
+                    </div>
+                </div>
+                <!-- /LOGO -->
+
+                <!-- SEARCH BAR -->
+                <div class="col-md-6">
+                    <div class="header-search">
+                        <form>
+                            <select class="input-select" id="p_classid">
+                                <option value="0">全部</option>
+                                <option value="1">电脑</option>
+                                <option value="2">手机</option>
+                                <option value="3">耳机</option>
+                                <option value="4">像机</option>
+                                <option value="5">平板电脑</option>
+                            </select>
+                            <input class="input" id="p_name" placeholder="搜索内容：">
+                            <button class="search-btn" v-on:click="Sel()">搜索</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /SEARCH BAR -->
+
+                <!-- 购物车 -->
+                <div class="col-md-3 clearfix">
+                    <div class="header-ctn">
+                        <!-- Wishlist -->
+                        <div>
+                            <a href="/love">
+                                <i class="fa fa-heart-o"></i>
+                                <span>喜欢</span>
+                                <!--喜欢的数量-->
+                                <div class="qty">{{countL}}</div>
+                            </a>
+                        </div>
+                        <!-- /Wishlist -->
+
+                        <!-- 购物车 -->
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>购物车</span>
+                                <!--购物车数量-->
+                                <div class="qty">{{countC}}</div>
+                            </a>
+                            <div class="cart-dropdown">
+                                <div class="cart-list">
+                                    <div class="product-widget" v-for="c in cartlist">
+                                        <div class="product-img">
+                                            <img :src="'../images/'+c.cart_img" alt="">
+                                        </div>
+                                        <div class="product-body">
+                                            <h3 class="product-name"><a href="####">{{c.cart_p_name}}</a></h3>
+                                            <h4 class="product-price"><span class="qty">{{c.cart_sum}}</span>￥{{c.cart_p_price}}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--总价-->
+                                <div class="cart-summary">
+                                </div>
+                                <div class="cart-btns">
+                                    <a href="/cartout">进入购物车</a>
+                                    <a href="####">取消 <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Cart -->
+
+                        <!-- Menu Toogle -->
+                        <div class="menu-toggle">
+                            <a href="####">
+                                <i class="fa fa-bars"></i>
+                                <span>Menu</span>
+                            </a>
+                        </div>
+                        <!-- /Menu Toogle -->
+                    </div>
+                </div>
+                <!-- /ACCOUNT -->
+            </div>
+            <!-- row -->
+        </div>
+        <!-- container -->
+    </div>
+    <!-- /MAIN HEADER -->
+</header>
+<!-- /HEADER -->
+<!-- /HEADER -->
+
+<!-- 导航栏 -->
+<nav id="navigation">
+    <!-- container -->
+    <div class="container">
+        <!-- responsive-nav -->
+        <div id="responsive-nav">
+            <!-- NAV -->
+            <ul class="main-nav nav navbar-nav">
+                <li><a href="/">首页</a></li>
+                <li class="active"><a href="/">商品详情</a></li>
+                <li><a href="/CheckOut">待结算订单</a></li>
+                <li><a href="/CheckOut">购物车</a></li>
+                <li><a href="/my">我的</a></li>
+            </ul>
+            <!-- /NAV -->
+        </div>
+        <!-- /responsive-nav -->
+    </div>
+    <!-- /container -->
+</nav>
+<!-- /NAVIGATION -->
+<!-- 路径栏 -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="breadcrumb-header">商品详情</h3>
+                <ul class="breadcrumb-tree">
+                    <li><a href="/">首页</a></li>
+                    <li class="active">商品详情</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->
+
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- 商品主图片 和左轮播图一一对应 -->
+            <div class="col-md-5 col-md-push-2">
+                <div id="product-main-img">
+                    <div class="product-preview">
+                        <!--						th:text="'姓名：'+${name}"-->
+                        <img th:src="'../images/'+${imgs.img1}" alt="">
+                    </div>
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img2}" alt="">
+                    </div>
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img3}" alt="">
+                    </div>
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img4}" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- /Product main img -->
+
+            <!-- 商品图片 左轮播图 -->
+            <div class="col-md-2  col-md-pull-5">
+                <div id="product-imgs">
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img1}" alt="">
+                    </div>
+
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img2}" alt="">
+                    </div>
+
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img3}" alt="">
+                    </div>
+
+                    <div class="product-preview">
+                        <img th:src="'../images/'+${imgs.img4}" alt="">
+                    </div>
+                </div>
+            </div>
+            <!-- /Product thumb imgs -->
+
+            <!-- Product details -->
+            <div class="col-md-5" id="buy1">
+                <div class="product-details">
+                    <h2 class="product-name">{{product.p_name}}</h2>
+                    <div>
+                        <div class="product-rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                        </div>
+                        <a class="review-link" href="#">库存：<span id="keep">{{product.p_keep}}</span></a>
+                        <a class="review-link" href="#">销量：<span style="color: #D10024">{{product.p_sum}}</span></a>
+                    </div>
+                    <div>
+                        <h3 class="product-price">￥{{numFilter(product.p_price*0.9)}}
+                            <del class="product-old-price">￥{{product.p_price}}</del>
+                        </h3>
+                        <span class="product-available">促销中</span>
+                    </div>
+                    <p>商品介绍.</p>
+                    {{product.intro}}
+                    <div class="product-options">
+                        <label>
+                            套餐：
+                            <select class="input-select">
+                                <option value="0">套餐1</option>
+                                <option value="0">套餐2</option>
+                                <option value="0">套餐3</option>
+                            </select>
+                        </label>
+                        <label>
+                            颜色：
+                            <select class="input-select">
+                                <option value="0">红色</option>
+                                <option value="0">蓝色</option>
+                                <option value="0">黑色</option>
+                            </select>
+                        </label>
+                    </div>
+                    <input type="hidden" id="p_id" :value="product.p_id">
+                    <div class="add-to-cart">
+                        <div class="qty-label">
+                            购买数量
+                            <div class="input-number">
+                                <input id="cart_sum" type="number" name="cart_sum" value="1">
+                                <span id="adds" class="qty-up" onclick="adds()">+</span>
+                                <span id="downs" class="qty-down" onclick="downs()">-</span>
+                            </div>
+                        </div>
+                        <button class="add-to-cart-btn" v-on:click="AddCart(product.p_id,product.p_uuid)"><i class="fa fa-shopping-cart" ></i> 添加购物车</button>
+                    </div>
+                    <ul class="product-btns">
+                        <li><a href="#"><i class="fa fa-heart-o"></i> 添加收藏</a></li>
+                        <li><a href="#"><i class="fa fa-exchange"></i> 比较</a></li>
+                    </ul>
+
+                    <ul class="product-links">
+                        <li>种类:</li>
+                        <li><a href="#">{{product.classname}}</a></li>
+                    </ul>
+
+                    <ul class="product-links">
+                        <li>Share:</li>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                        <li><a href="#"><i class="fa fa-envelope"></i></a></li>
+                    </ul>
+                    <a class="btn btn-danger" onclick="pay()" role="button"><i class="fa fa-shopping-cart"></i> 立即购买</a>
+                </div>
+            </div>
+            <!-- /Product details -->
+
+
+            <!--过渡栏 -->
+            <div class="col-md-12">
+                <div id="product-tab">
+                    <!-- product tab nav -->
+                    <ul class="tab-nav">
+                        <li class="active"><a data-toggle="tab" href="#tab1">简介</a></li>
+                        <li><a data-toggle="tab" href="#tab2">详情</a></li>
+                        <li><a data-toggle="tab" href="#tab3">评论 (3)</a></li>
+                    </ul>
+                    <!-- /product tab nav -->
+                    <!-- 过渡栏  -->
+                    <div class="tab-content">
+                        <!-- 过渡栏 -->
+                        <div id="tab1" class="tab-pane fade in active">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>功能齐全，价美物廉，特价优惠，七天包换</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tab1  -->
+
+                        <!-- tab2  -->
+                        <div id="tab2" class="tab-pane fade in">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>感谢您一直以来的支持.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tab2  -->
+
+                        <!-- 评论内容  -->
+                        <div id="tab3" class="tab-pane fade in">
+                            <div class="row">
+                                <!-- Rating -->
+                                <div class="col-md-3">
+                                    <div id="rating">
+                                        <div class="rating-avg">
+                                            <span>4.5</span>
+                                            <div class="rating-stars">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star-o"></i>
+                                            </div>
+                                        </div>
+                                        <ul class="rating">
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div style="width: 80%;"></div>
+                                                </div>
+                                                <span class="sum">3</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div style="width: 60%;"></div>
+                                                </div>
+                                                <span class="sum">2</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div></div>
+                                                </div>
+                                                <span class="sum">0</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div></div>
+                                                </div>
+                                                <span class="sum">0</span>
+                                            </li>
+                                            <li>
+                                                <div class="rating-stars">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div>
+                                                <div class="rating-progress">
+                                                    <div></div>
+                                                </div>
+                                                <span class="sum">0</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- /Rating -->
+
+                                <!-- Reviews -->
+                                <div class="col-md-6">
+                                    <div id="reviews">
+                                        <ul class="reviews">
+                                            <li>
+                                                <div class="review-heading">
+                                                    <h5 class="name">John</h5>
+                                                    <p class="date">27 DEC 2018, 8:0 PM</p>
+                                                    <div class="review-rating">
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star-o empty"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="review-body">
+                                                    <p>好，赞一个</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="review-heading">
+                                                    <h5 class="name">xiaoming</h5>
+                                                    <p class="date">2020</p>
+                                                    <div class="review-rating">
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star-o empty"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="review-body">
+                                                    <p>很棒！</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="review-heading">
+                                                    <h5 class="name">xiaowang</h5>
+                                                    <p class="date">27 DEC 2018, 8:0 PM</p>
+                                                    <div class="review-rating">
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star-o empty"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="review-body">
+                                                    <p>不错</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <ul class="reviews-pagination">
+                                            <li class="active">1</li>
+                                            <li><a href="#">2</a></li>
+                                            <li><a href="#">3</a></li>
+                                            <li><a href="#">4</a></li>
+                                            <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- /Reviews -->
+
+                                <!-- Review Form -->
+                                <div class="col-md-3">
+                                    <div id="review-form">
+                                        <form class="review-form">
+                                            <input class="input" type="text" placeholder="Your Name">
+                                            <input class="input" type="email" placeholder="Your Email">
+                                            <textarea class="input" placeholder="Your Review"></textarea>
+                                            <div class="input-rating">
+                                                <span>Your Rating: </span>
+                                                <div class="stars">
+                                                    <input id="star5" name="rating" value="5" type="radio"><label
+                                                        for="star5"></label>
+                                                    <input id="star4" name="rating" value="4" type="radio"><label
+                                                        for="star4"></label>
+                                                    <input id="star3" name="rating" value="3" type="radio"><label
+                                                        for="star3"></label>
+                                                    <input id="star2" name="rating" value="2" type="radio"><label
+                                                        for="star2"></label>
+                                                    <input id="star1" name="rating" value="1" type="radio"><label
+                                                        for="star1"></label>
+                                                </div>
+                                            </div>
+                                            <button class="primary-btn">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- /Review Form -->
+                            </div>
+                        </div>
+                        <!-- /tab3  -->
+                    </div>
+                </div>
+            </div>
+            <!-- /过渡栏 -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /SECTION -->
+
+
+<!-- /NEWSLETTER -->
+
+<!-- 页面尾部2 -->
+<footer id="footer">
+    <!-- top footer -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">关于我们</h3>
+                        <p>xxxxxxxxxxxxxxxxxxxxxxx</p>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fa fa-map-marker"></i>xxxxxxxxxxxxxxx</a></li>
+                            <li><a href="#"><i class="fa fa-phone"></i>0758-xxxxxxxx</a></li>
+                            <li><a href="#"><i class="fa fa-envelope-o"></i>email@xxxxxxxx.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">xxxxxxxx</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="clearfix visible-xs"></div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">xxxxxxxx</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">关于我们</a></li>
+                            <li><a href="#">xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx & xxxxxxxx</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xs-6">
+                    <div class="footer">
+                        <h3 class="footer-title">xxxxxxxx</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx</a></li>
+                            <li><a href="#">xxxxxxxx xxxxxxxx xxxxxxxx</a></li>
+                            <li><a href="#">帮助</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /top footer -->
+
+    <!-- bottom footer -->
+    <div id="bottom-footer" class="section">
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <ul class="footer-payments">
+                        <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                        <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                        <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /bottom footer -->
+</footer>
+
+<!-- jQuery Plugins -->
+<script src="../main/js/jquery.min.js"></script>
+<script src="../main/js/bootstrap.min.js"></script>
+<script src="../main/js/slick.min.js"></script>
+<script src="../main/js/nouislider.min.js"></script>
+<script src="../main/js/jquery.zoom.min.js"></script>
+<script src="../main/js/main.js"></script>
+<!--引入Vue-->
+<script src="../vuejs/axios-0.18.0.js"></script>
+<script src="../vuejs/vuejs-2.5.16.js"></script>
+<script src="../vuejs/product.js"></script>
+<script src="../vuejs/header.js"></script>
+<script type="text/javascript">
+    <!--	控制数量按钮 -->
+    function adds() {
+        let val = $("#cart_sum").val();
+        $("#cart_sum").val(Number(val) + Number(1))
+    }
+
+    function downs() {
+        let val = $("#cart_sum").val();
+        if (val > 1)
+            $("#cart_sum").val(Number(val) - Number(1))
+    }
+
+    //	购买按钮
+    function pay() {
+        var keep = $("#keep").html();
+        var cart_sum = $("#cart_sum").val();
+        var p_id = $("#p_id").val();
+        if (cart_sum < 0) {
+            alert("输入错误")
+            return false;
+        } else if (keep >= cart_sum) {
+            $.ajax({
+                url: "/pay",
+                data: {p_id: p_id, cart_sum: cart_sum},
+                type: "post",
+                success: function (data) {
+                    console.log(data);
+                    if (data == "请先登录") {
+                        window.location.href = "/login";
+                    } else if (data == '库存不足') {
+                        alert(data)
+                    } else
+                        window.location.href = "/CheckOut_pay?cart_uuid=" + data;
+                }, error: function (err) {
+                    console.log(err)
+                }
+            })
+        } else alert("购买数为：" + cart_sum + "，当前库存为：" + keep)
+
+    }
+</script>
+</body>
+</html>

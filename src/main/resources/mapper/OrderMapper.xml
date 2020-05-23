@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定属性-->
+
+<mapper namespace="com.webshop.webshop.dao.OrderMapper">
+
+    <!--    生成订单-->
+    <insert id="InsOrder" parameterType="order">
+        INSERT INTO `webshop`.`pro_order`
+(
+`date`,
+`p_id`,
+ `order_uuid`,
+`order_price`,
+`state`,
+`post`,
+`order_cardid`,
+`sum`,
+`address`,
+ `phone`,
+`name`,
+ `post_id`,
+ `u_id`
+ )
+ VALUES (
+ #{date},
+ #{p_id},
+ #{order_uuid},
+ #{order_price},
+ #{state},
+#{post},
+ #{order_cardid},
+#{sum},
+#{address},
+#{phone},
+#{name},
+#{post_id},
+#{u_id}
+);
+    </insert>
+
+    <!--    查询订单-->
+    <!--    一对多查询-->
+    <select id="SelectOrderAndCart" resultMap="SelectOrder" parameterType="order">
+        SELECT * FROM pro_order LEFT JOIN cart
+        on pro_order.order_uuid=cart.cart_order_id
+        <where>
+            <if test="u_id !=null">and pro_order.u_id=#{u_id}</if>
+            <if test="order_cardid !=null">and pro_order.order_cardid=#{order_cardid}</if>
+        </where>
+
+    </select>
+
+    <resultMap id="SelectOrder" type="Order">
+        <!--            通过此ID为主键查询-->
+        <id property="id" column="id"/>
+        <result property="date" column="date"/>
+        <result property="p_id" column="p_id"/>
+        <result property="order_uuid" column="order_uuid"/>
+        <result property="order_price" column="order_price"/>
+        <result property="state" column="state"/>
+        <result property="order_cardid" column="order_cardid"/>
+        <result property="sum" column="sum"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="name" column="name"/>
+        <result property="post_id" column="post_id"/>
+        <result property="u_id" column="u_id"/>
+
+        <collection property="cartList" javaType="List" ofType="cart">
+            <!--            通过此ID关联-->
+            <id property="cart_id" column="cart_id"/>
+            <result property="cart_p_name" column="cart_p_name"/>
+            <result property="cart_date" column="cart_date"/>
+            <result property="cart_p_id" column="cart_p_id"/>
+            <result property="cart_order_price" column="cart_order_price"/>
+            <result property="cart_state" column="cart_state"/>
+            <result property="cart_order_id" column="cart_order_id"/>
+            <result property="cart_sum" column="cart_sum"/>
+            <result property="cart_img" column="cart_img"/>
+            <result property="u_id" column="u_id"/>
+            <result property="cart_uuid" column="cart_uuid"/>
+            <result property="cart_p_price" column="cart_p_price"/>
+        </collection>
+    </resultMap>
+
+    <update id="UdpOrder" parameterType="order">
+
+        UPDATE pro_order
+        <set>
+            state=#{state},
+        </set>
+        <where>
+            <if test="id !=null">
+                and id =#{id}
+            </if>
+            <if test="u_id !=null">
+                and u_id =#{u_id}
+            </if>
+        </where>
+    </update>
+</mapper>
+

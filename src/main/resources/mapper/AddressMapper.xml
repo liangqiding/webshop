@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定属性-->
+
+<mapper namespace="com.webshop.webshop.dao.AddressMapper">
+
+    <insert id="InsAddress" parameterType="address">
+        INSERT INTO `webshop`.`address`
+( `name`, `phone`, `address`, `u_id`)
+VALUES
+( #{name},  #{phone},  #{address},  #{u_id});
+    </insert>
+<!--    更新地址-->
+    <update id="UpdAddressByid" parameterType="address">
+        UPDATE `webshop`.`address` <set>
+        <if test="name !=null and name !=''">
+            `name`=#{name},
+        </if>
+         <if test="address !=null and address !=''">
+            `address`=#{address},
+        </if>
+         <if test="phone !=null and phone !=''">
+            `phone`=#{phone},
+        </if>
+    </set>
+        WHERE (`id`=#{id});
+    </update>
+    <delete id="DelAddressByid" parameterType="Integer">
+        DELETE FROM address WHERE id=#{id};
+    </delete>
+    <select id="SelAddressByuid" parameterType="Integer" resultType="address">
+        select * from address where u_id=#{u_id}
+    </select>
+    <select id="SelAddressByuidOne" parameterType="Integer" resultType="address">
+        select * from address where u_id=#{u_id}
+    </select>
+<!--    统计地址数-->
+    <select id="CountAddress" parameterType="Integer" resultType="Integer">
+        select count(*) from address
+       where u_id=#{u_id}
+    </select>
+</mapper>
+

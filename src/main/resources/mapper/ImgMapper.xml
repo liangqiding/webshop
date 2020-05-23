@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定属性-->
+
+<mapper namespace="com.webshop.webshop.dao.ImgMapper">
+
+    <insert id="InsterImg" parameterType="images">
+INSERT INTO `webshop`.`images`
+( `img1`, `img2`, `img3`, `img4`, `img5`, `img6`, `p_uuid`,intro)
+VALUES
+(#{img1}, #{img2}, #{img3}, #{img4}, #{img5}, #{img6}, #{p_uuid},#{intro});
+    </insert>
+    <select id="SelImgByUid" parameterType="String" resultType="images">
+    select * from images
+    where p_uuid=#{p_uuid}
+</select>
+    <!--删除图片-->
+    <delete id="DelImgByUuid" parameterType="String">
+DELETE FROM images WHERE p_uuid=#{p_uuid};
+    </delete>
+    <update id="UpdImgByUuid" parameterType="images">
+        UPDATE
+        Images
+        <set>
+            <if test="img1 !=null and img1!=''">
+                img1=#{img1},
+            </if>
+            <if test="img2 !=null and img2!=''">
+                img2=#{img2},
+            </if>
+            <if test="img3 !=null and img3!=''">
+                img3=#{img3},
+            </if>
+            <if test="img4 !=null and img4!=''">
+                img4=#{img4},
+            </if>
+            <if test="intro !=null and intro!=''">
+                intro=#{intro},
+            </if>
+        </set>
+        where p_uuid=#{p_uuid}
+    </update>
+
+</mapper>
+

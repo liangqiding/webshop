@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>商城登录注册</title>
+    <link rel="stylesheet" href="../login/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../login/css/style.css">
+    <script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+
+        <!--			i==1为登录 ,否则为注册-->
+        function go(i) {
+            if (i == 1) {
+                var username = $("#username").val();
+                var passwrod = $("#password").val();
+                var url = "/dologin";
+                if (username==''||passwrod==''){
+                    alert("请输入完整的账号密码")
+                    return false;
+                }
+            } else {
+                var username = $("#regname").val();
+                var passwrod = $("#regpass").val();
+                var passwrod2 = $("#reregpass").val();
+                if (username==''||passwrod==''||passwrod2==''){
+                    alert("请输入完整的账号密码")
+                    return false;
+                }
+                if (passwrod == passwrod2) {
+                    //	密码一致
+                    var url = "/register";
+                } else {
+                    alert("二次密码输入不一致！")
+                    return false;
+                }
+            }
+            var u_name=$("#u_name").val();
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {
+                    username: username,
+                    password: passwrod,
+                    u_name:u_name
+                },
+                success: function (data) {
+                    if (data=='index'){
+                        window.location.href=data;
+                    }else {
+                        alert(data)
+                        window.location.href="/login";
+                    }
+                    return ture;
+                },
+                error: function () {
+                    alert("error")
+                    return ture;
+                }
+            });
+        }
+    //检测密码
+        function  bur() {
+            var passwrod = $("#regpass").val();
+            var passwrod2 = $("#reregpass").val();
+            if (passwrod == passwrod2) {
+                //	密码一致
+                $('#rp').text("密码")
+                $('#rp').attr("style","color: write");
+            } else {
+                $('#rp').text("密码不一致")
+                $('#rp').attr("style","color: green");
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div class="materialContainer">
+    <div class="box">
+        <div class="title">登录</div>
+        <div class="input">
+            <label for="username">用户名</label>
+            <input type="text" name="username" id="username">
+            <span class="spin"></span>
+        </div>
+        <div class="input">
+            <label for="password">密码</label>
+            <input type="password" name="password" id="password">
+            <span class="spin"></span>
+        </div>
+        <div class="button login">
+            <button onclick="go(1)">
+                <span>登录</span>
+                <i class="fa fa-check " aria-hidden="true"></i>
+            </button>
+        </div>
+        <a href="javascript:" class="pass-forgot">忘记密码？</a>
+    </div>
+
+    <div class="overbox">
+        <div class="material-button alt-2">
+            <span class="shape"></span>
+        </div>
+        <div class="title">注册</div>
+        <div class="input">
+            <label for="regname">登录名</label>
+            <input type="text" name="regname" id="regname">
+            <span class="spin"></span>
+        </div>
+        <div class="input">
+            <label for="regpass">密码</label>
+            <input type="password" name="regpass" id="regpass">
+            <span class="spin"></span>
+        </div>
+        <div class="input">
+            <label for="reregpass"><span id="rp">确认密码</span></label>
+            <input type="password" name="reregpass" id="reregpass" onblur="bur()">
+            <span class="spin"></span>
+        </div>
+        <div class="button">
+            <button onclick="go()">
+                <span>注册</span>
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="../login/js/jquery.min.js"></script>
+<script src="../login/js/index.js"></script>
+
+</body>
+</html>

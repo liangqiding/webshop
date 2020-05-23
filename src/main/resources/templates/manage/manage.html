@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="../manage/css/bootstrap.min.css">
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="../manage/css/bootstrap-theme.min.css">
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script src="../manage/js/bootstrap.js"></script>
+<script type="text/javascript">
+    function del(p_id) {
+        var r = confirm("确定删除吗？");
+        if (r == true) {
+//写入数据库中，对应ID扣掉5积分
+            $.ajax({
+                url: "/delpro",
+                data: {p_id: p_id},
+                type: 'post',
+                success: function (data) {
+                    alert(data);//写上JS跳转信息，跳转到详细信息页面
+                    window.location.href="/manage";
+                },
+                error: function () {
+                    alert("删除失败！")
+                }
+            });
+
+
+        } else {
+            alert("取消删除");
+            return false;
+        }
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <title>商城后台管理界面</title>
+</head>
+<body>
+<div id="manage">
+    <!--主题-->
+    <h1 class="text-center">商场后台管理</h1>
+    <!--导航条-->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">首页</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="内容">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">帮助</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">个人信息 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">账号</a></li>
+                            <li><a href="#">权限</a></li>
+                            <li><a href="#">交易状态</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/logout">退出登录</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <!--管理页面主体-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2">
+                <ul class="nav nav-pills nav-stacked">
+                    <li role="presentation" class="active"><a href="#">商品列表</a></li>
+                    <li role="presentation"><a href="/ordermanage">订单列表</a></li>
+                </ul>
+            </div>
+            <!--        表格-->
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-10"></div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModaladd">添加
+                        </button>
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        <td>序号</td>
+                        <td>封面</td>
+                        <td>商品介绍</td>
+                        <td>商品名</td>
+                        <td>种类</td>
+                        <td>价格</td>
+                        <td>库存</td>
+                        <td>销量</td>
+                        <td>管理</td>
+                    </tr>
+                    <tr v-for="p,index in productlist">
+                        <td>{{index+ Number(1)}}</td>
+                        <!--                    p.p_img-->
+                        <td><img :src="'../images/'+p.p_img" height="100px" width="100px"></td>
+                        <td><a data-toggle="modal" data-target="#myModal" v-on:click="findimg(p.p_uuid)">详情</a></td>
+                        <td>{{p.p_name}}</td>
+                        <td>{{p.classname}}</td>
+                        <td>{{p.p_price}}</td>
+                        <td>{{p.p_keep}}</td>
+                        <td>{{p.p_sum}}</td>
+                        <td>
+                            <!--                   商品id= p_id -->
+                            <input class="btn btn-info" data-toggle="modal" :data-target="'#myModal'+p.p_id"
+                                   type="button" value="修改" v-on:click="findimg(p.p_uuid)">
+                            <input :onclick="'del('+p.p_id+')'" class="btn btn-danger" type="button" value="删除">
+                            <!--模态框 修改-->
+                            <!-- Modal -->
+                            <div class="modal fade" :id="'myModal'+p.p_id" tabindex="-1" role="dialog"
+                                 :aria-labelledby="'myModalLabel'+p.p_id">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel2">商品:{{p.p_name}}</h4>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <form action="/UpdatePro" enctype="multipart/form-data" method="post"
+                                                  id="update">
+                                                <input type="hidden" :value="p.p_id" name="p_id">
+                                                <input type="hidden" :value="p.p_imgid" name="p_uuid">
+                                                <input type="hidden" :value="p.p_img" name="oldimg">
+                                                <h3 style="color: #31b0d5">主商品封面：</h3>
+                                                <img :src="'../images/'+p.p_img" height="100px" width="100px">
+                                                <input placeholder="请选择封面" type="file" name="file" id="file" />
+                                                <hr />
+                                                <br>
+                                                <h3 style="color: #31b0d5">介绍图（最多4张）：</h3>
+                                                <br/><img :src="'../images/'+imglist.img1" height="100px" width="100px">
+                                                <input placeholder="请选择图介绍图" type="file" name="file1" id="file1"/>
+
+                                                <hr/>
+                                                <br/><img :src="'../images/'+imglist.img2" height="100px" width="100px">
+                                                <input placeholder="请选择图介绍图" type="file" name="file2" id="file2"/>
+                                                <hr/>
+                                                <br/><img :src="'../images/'+imglist.img3" height="100px" width="100px"><input placeholder="请选择图介绍图" type="file" name="file3" id="file3"/>
+
+                                                <hr/>
+                                                <br/> <img :src="'../images/'+imglist.img4" height="100px" width="100px"><input placeholder="请选择图介绍图" type="file" name="file4" id="file4"/>
+
+                                                <hr/>
+                                                <h3 style="color: #31b0d5">商品信息</h3>
+                                                <input class="form-control" placeholder="商品名" type="text" name="p_name"
+                                                       id="p_name" :value="p.p_name"/>
+                                                <br/><input class="form-control" placeholder="价格" type="text"
+                                                            name="p_price" id="p_price" :value="p.p_price"/>
+                                                <br/><input class="form-control" placeholder="数量" type="text"
+                                                            name="p_keep" id="p_keep" :value="p.p_keep"/>
+                                                <br/>商品种类：<br/>
+<!--                                                <select name="p_classid">-->
+<!--                                                    <option value="1">电脑</option>-->
+<!--                                                    <option value="2">手机</option>-->
+<!--                                                    <option value="3">耳机</option>-->
+<!--                                                    <option value="4">摄像机</option>-->
+<!--                                                    <option value="5">平板电脑</option>-->
+<!--                                                </select>-->
+                                                <br/>
+                                                <input class="form-control" placeholder="介绍" type="text" name="intro"
+                                                       id="intro" :value="p.intro"/>
+                                                <br/>
+                                                <button type="submit" class="btn btn-success" id="submitbtns">
+                                                    &nbsp;保存
+                                                </button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                            </button>
+                                            <button type="button" class="btn btn-primary">保存</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--模态框 修改-->
+                        </td>
+
+                    </tr>
+                    <!--模态框--详情介绍-->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">XXX商品</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>详情图片：</p>
+                                    <img :src="'../images/'+imglist.img1" height="100px" width="100px">
+                                    <img :src="'../images/'+imglist.img2" height="100px" width="100px">
+                                    <img :src="'../images/'+imglist.img3" height="100px" width="100px">
+                                    <img :src="'../images/'+imglist.img4" height="100px" width="100px">
+                                    <p>
+                                        商品介绍:
+                                    </p>
+                                    <p>
+                                        {{imglist.intro}}
+                                    </p>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--模态框-->
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--模态框 增加-->
+<!-- Modal -->
+<div class="modal fade" id="myModaladd" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabeladd">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel3">添加商品</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/AddPro" enctype="multipart/form-data" method="post"
+                >
+                    <h3 style="color: #31b0d5">主商品封面：</h3>
+                    <input placeholder="请选择封面" type="file" name="file"/>
+                    <hr/>
+                    <hr/>
+                    <br>
+                    <h3 style="color: #31b0d5">介绍图（最多4张）：</h3>
+                    <br/><input placeholder="请选择图介绍图" type="file" name="file1"/>
+                    <hr/>
+                    <br/><input placeholder="请选择图介绍图" type="file" name="file2"/>
+                    <hr/>
+                    <br/><input placeholder="请选择图介绍图" type="file" name="file3"/>
+                    <hr/>
+                    <br/><input placeholder="请选择图介绍图" type="file" name="file4"/>
+                    <hr/>
+                    <h3 style="color: #31b0d5">商品信息</h3>
+                    <input class="form-control" placeholder="商品名" type="text" name="p_name"
+                    />
+                    <br/><input class="form-control" placeholder="价格" type="text"
+                                name="p_price" id="p_price3"/>
+                    <br/><input class="form-control" placeholder="数量" type="text"
+                                name="p_keep" id="p_keep3"/>
+                    <br/>商品种类：<br/>
+                    <select name="p_classid">
+                        <option value="1">电脑</option>
+                        <option value="2">手机</option>
+                        <option value="3">耳机</option>
+                        <option value="4">摄像机</option>
+                        <option value="5">平板电脑</option>
+                    </select>
+                    <br/>
+                    <input class="form-control" placeholder="介绍" type="text" name="intro"
+                    />
+                    <br/>
+                    <button type="submit" class="btn btn-success">
+                        &nbsp;保存
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模态框 增加-->
+
+
+</body>
+<!--引入Vue-->
+<script src="../vuejs/axios-0.18.0.js"></script>
+<script src="../vuejs/vuejs-2.5.16.js"></script>
+<script src="../vuejs/manage.js"></script>
+</html>

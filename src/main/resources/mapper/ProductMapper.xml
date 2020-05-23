@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定属性-->
+
+<mapper namespace="com.webshop.webshop.dao.ProductMapper">
+    <!--查询商品-->
+    <select id="SelAllProduct" resultType="product" parameterType="product">
+        SELECT * FROM product left JOIN dict
+        on product.p_classid=dict.d_id
+        <where>
+            <if test="p_userid !=null ">
+              and  p_userid=#{p_userid}
+            </if>
+            <if test="p_name !=null and p_name!='' ">
+             and   p_name LIKE CONCAT('%',#{p_name},'%')
+            </if>
+            <if test="p_classid !=null ">
+            and    p_classid=#{p_classid}
+            </if>
+        </where>
+    </select>
+<!--    根据id查询商品-->
+    <select id="SelProductByPid" resultType="product" parameterType="Integer">
+        SELECT * FROM product left JOIN dict
+        on product.p_classid=dict.d_id
+       where
+                p_id=#{p_id}
+    </select>
+    <update id="UpdProById" parameterType="product">
+        UPDATE
+        product
+        <set>
+        <if test="p_name !=null and p_name!=''">
+           p_name=#{p_name},
+        </if>
+        <if test="p_price !=null">
+            p_price=#{p_price},
+        </if>
+        <if test="p_sum !=null">
+            p_sum=#{p_sum},
+        </if>
+        <if test="p_keep !=null">
+            p_keep=#{p_keep},
+        </if>
+        <if test="p_img !=null and p_img!=''">
+            p_img=#{p_img},
+        </if>
+        <if test="p_status !=null and p_status!=''">
+            p_status=#{p_status},
+        </if>
+        <if test="p_classid !=null">
+
+            p_classid=#{p_classid},
+        </if>
+        <if test="intro !=null and intro!=''">
+            intro=#{intro},
+        </if>
+        <if test="date !=null and date!=''">
+            date=#{date},
+        </if>
+    </set>
+        where p_id=#{p_id}
+    </update>
+    <insert id="InsPro" parameterType="product">
+    INSERT INTO `webshop`.`product`
+( `p_name`,
+`p_price`,
+`p_sum`,
+`p_keep`,
+ `p_userid`,
+`p_img`,
+ `p_imgid`,
+  `p_status`,
+   `p_classid`,
+    `intro`,
+    `date`,
+    p_uuid)
+ VALUES ( #{p_name},
+  #{p_price},
+   0,
+    #{p_keep},
+#{p_userid},
+#{p_img},
+#{p_imgid},
+'',
+#{p_classid},
+#{intro},
+#{date},
+#{p_uuid}
+);
+</insert>
+    <delete id="DelProById" parameterType="Integer">
+DELETE FROM product WHERE p_id=#{p_id};
+    </delete>
+</mapper>
+

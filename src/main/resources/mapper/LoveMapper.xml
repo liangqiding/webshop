@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定属性-->
+
+<mapper namespace="com.webshop.webshop.dao.LoveMapper">
+    <select id="SelLoveByUidOrId" parameterType="love" resultType="love">
+        select * from love
+        <where>
+            <if test="p_id !=null">
+                p_id=#{p_id}
+            </if>
+            <if test="u_id !=null">
+                u_id=#{u_id}
+            </if>
+        </where>
+    </select>
+    <insert id="InsLove" parameterType="love">
+        INSERT INTO `webshop`.`love`
+(
+`p_id`,
+`u_id`
+)
+VALUES (
+#{p_id},
+#{u_id}
+);
+    </insert>
+    <delete id="DelLoveById" parameterType="love">
+       DELETE FROM love
+       WHERE p_id=#{p_id} and u_id=#{u_id}
+
+       ;
+    </delete>
+    <select id="SelLoveCount" parameterType="love" resultType="Integer">
+         select count(*) from love
+        <where> u_id=#{u_id}
+         <if test="p_id != null">
+             and p_id=#{p_id}
+         </if>
+         </where>
+    </select>
+    <!--    查询出具体商品-->
+    <select id="SelLovePro" parameterType="Integer" resultType="Product">
+         select * from love LEFT JOIN product
+on love.p_id=product.p_id
+WHERE love.u_id=#{u_id}
+    </select>
+</mapper>
+
